@@ -76,7 +76,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.0.6";
+        return "1.0.7";
     }
 
     @NotNull
@@ -692,13 +692,12 @@ public class PixelmonExtension extends PlaceholderExpansion {
                             if(length == 3) parsed = String.valueOf(species.isLegendary() || species.isUltraBeast() || species.isMythical());
                             break;
                         case "egg":
-                            if(length >= 4 && instructions[3].equals("groups")) { // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_egg_group%
-                                String eggGroups = Arrays.toString(stats.getEggGroups().toArray());
-                                eggGroups = eggGroups.substring(1, eggGroups.length()-1);
-                                String[] groups = eggGroups.split(", ");
-                                if (length == 4) parsed = listFunction(groups, ", ", true); // %pixelmon_party_[1-6]_moves%
-                                if (length >= 5 && instructions[4].contains("s:"))
-                                    parsed = listFunction(groups, instructionsLeft(4, instructions), true); // %pixelmon_party_[1-6]_moves_s:[separator]%
+                            if(length >= 4 && instructions[3].equals("groups")) { // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_egg_groups…
+                                List<String> groups = new ArrayList<>();
+                                stats.getEggGroups().forEach(eggGroup -> groups.add(eggGroup.getTranslatedName().getString()));
+                                if (length == 4) parsed = listFunction(groups.toArray(new String[0]), ", ", true); // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_egg_groups%
+                                if (length >= 5 && instructions[4].contains("s:")) // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_egg_groups_s:[separator]%
+                                    parsed = listFunction(groups.toArray(new String[0]), instructionsLeft(4, instructions), true);
                             }
                             if(length == 5 && instructions[3].equals("steps") && instructions[4].equals("max")) {
                                 // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_egg_steps_max%
