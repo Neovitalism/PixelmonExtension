@@ -8,7 +8,6 @@ import com.pixelmonmod.pixelmon.api.pokedex.PlayerPokedex;
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
 import com.pixelmonmod.pixelmon.api.pokemon.Nature;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.api.pokemon.ability.Ability;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Pokedex;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
@@ -24,6 +23,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.stats.extraStats.MewStats;
 import com.pixelmonmod.pixelmon.api.registries.PixelmonSpecies;
 import com.pixelmonmod.pixelmon.api.storage.PlayerPartyStorage;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
+import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
@@ -76,7 +76,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.0.7";
+        return "1.1.0";
     }
 
     @NotNull
@@ -129,8 +129,103 @@ public class PixelmonExtension extends PlaceholderExpansion {
                         }
                 }
                 if(!(parsed.equals(""))) return parsed;
-                // End Server Placeholders
             }
+            if(length > 1 && instructions[0].equals("next") && instructions[1].equals("megaboss")) { // %pixelmon_next_megaboss…
+                long nextSpawnTime = TimeUnit.MILLISECONDS.toSeconds(PixelmonSpawning.megaBossSpawner.nextSpawnTime - System.currentTimeMillis());
+                long hours;
+                long minutes;
+                long seconds;
+                switch (length) {
+                    case 2:
+                        hours = TimeUnit.SECONDS.toHours(nextSpawnTime);
+                        minutes = TimeUnit.SECONDS.toMinutes(nextSpawnTime - TimeUnit.HOURS.toSeconds(hours));
+                        seconds = TimeUnit.SECONDS.toSeconds(nextSpawnTime - TimeUnit.MINUTES.toSeconds(minutes));
+                        parsed = timeFormat(hours) + ":" + timeFormat(minutes) + ":" + timeFormat(seconds); // %pixelmon_next_megaboss%
+                        break;
+                    case 3:
+                        if(instructions[2].equals("minutes")) { // %pixelmon_next_megaboss_minutes%
+                            minutes = TimeUnit.SECONDS.toMinutes(nextSpawnTime);
+                            seconds = TimeUnit.SECONDS.toSeconds(nextSpawnTime - TimeUnit.MINUTES.toSeconds(minutes));
+                            parsed = timeFormat(minutes) + ":" + timeFormat(seconds);
+                            break;
+                        }
+                        if(instructions[2].equals("seconds")) { // %pixelmon_next_megaboss_seconds%
+                            parsed = String.valueOf(nextSpawnTime);
+                            break;
+                        }
+                    case 4:
+                        if(instructions[2].equals("minutes") && instructions[3].equals("rounded")) { // %pixelmon_next_megaboss_minutes_rounded%
+                            parsed = String.valueOf(TimeUnit.SECONDS.toMinutes(nextSpawnTime));
+                            break;
+                        }
+                }
+                if(!(parsed.equals(""))) return parsed;
+            }
+            if(length > 1 && instructions[0].equals("last") && instructions[1].equals("legend")) { // %pixelmon_last_legend…
+                long lastSpawnTime = (PixelmonSpawning.legendarySpawner.lastSpawnTime == 0) ? 0 : -TimeUnit.MILLISECONDS.toSeconds(
+                        PixelmonSpawning.legendarySpawner.lastSpawnTime - System.currentTimeMillis());
+                long hours;
+                long minutes;
+                long seconds;
+                switch (length) {
+                    case 2:
+                        hours = TimeUnit.SECONDS.toHours(lastSpawnTime);
+                        minutes = TimeUnit.SECONDS.toMinutes(lastSpawnTime - TimeUnit.HOURS.toSeconds(hours));
+                        seconds = TimeUnit.SECONDS.toSeconds(lastSpawnTime - TimeUnit.MINUTES.toSeconds(minutes));
+                        parsed = timeFormat(hours) + ":" + timeFormat(minutes) + ":" + timeFormat(seconds); // %pixelmon_last_legend%
+                        break;
+                    case 3:
+                        if(instructions[2].equals("minutes")) { // %pixelmon_last_legend_minutes%
+                            minutes = TimeUnit.SECONDS.toMinutes(lastSpawnTime);
+                            seconds = TimeUnit.SECONDS.toSeconds(lastSpawnTime - TimeUnit.MINUTES.toSeconds(minutes));
+                            parsed = timeFormat(minutes) + ":" + timeFormat(seconds);
+                            break;
+                        }
+                        if(instructions[2].equals("seconds")) { // %pixelmon_last_legend_seconds%
+                            parsed = String.valueOf(lastSpawnTime);
+                            break;
+                        }
+                    case 4:
+                        if(instructions[2].equals("minutes") && instructions[3].equals("rounded")) { // %pixelmon_last_legend_minutes_rounded%
+                            parsed = String.valueOf(TimeUnit.SECONDS.toMinutes(lastSpawnTime));
+                            break;
+                        }
+                }
+                if(!(parsed.equals(""))) return parsed;
+            }
+            if(length > 1 && instructions[0].equals("last") && instructions[1].equals("megaboss")) { // %pixelmon_last_megaboss…
+                long lastSpawnTime = (PixelmonSpawning.megaBossSpawner.lastSpawnTime == 0) ? 0 : -TimeUnit.MILLISECONDS.toSeconds(
+                        PixelmonSpawning.megaBossSpawner.lastSpawnTime - System.currentTimeMillis());
+                long hours;
+                long minutes;
+                long seconds;
+                switch (length) {
+                    case 2:
+                        hours = TimeUnit.SECONDS.toHours(lastSpawnTime);
+                        minutes = TimeUnit.SECONDS.toMinutes(lastSpawnTime - TimeUnit.HOURS.toSeconds(hours));
+                        seconds = TimeUnit.SECONDS.toSeconds(lastSpawnTime - TimeUnit.MINUTES.toSeconds(minutes));
+                        parsed = timeFormat(hours) + ":" + timeFormat(minutes) + ":" + timeFormat(seconds); // %pixelmon_last_megaboss%
+                        break;
+                    case 3:
+                        if(instructions[2].equals("minutes")) { // %pixelmon_last_megaboss_minutes%
+                            minutes = TimeUnit.SECONDS.toMinutes(lastSpawnTime);
+                            seconds = TimeUnit.SECONDS.toSeconds(lastSpawnTime - TimeUnit.MINUTES.toSeconds(minutes));
+                            parsed = timeFormat(minutes) + ":" + timeFormat(seconds);
+                            break;
+                        }
+                        if(instructions[2].equals("seconds")) { // %pixelmon_last_megaboss_seconds%
+                            parsed = String.valueOf(lastSpawnTime);
+                            break;
+                        }
+                    case 4:
+                        if(instructions[2].equals("minutes") && instructions[3].equals("rounded")) { // %pixelmon_last_megaboss_minutes_rounded%
+                            parsed = String.valueOf(TimeUnit.SECONDS.toMinutes(lastSpawnTime));
+                            break;
+                        }
+                }
+                if(!(parsed.equals(""))) return parsed;
+            }
+            // End Server Placeholders
             if(length > 1 && instructions[0].equals("trainer")) { // %pixelmon_trainer…
                 if(length >= 3 && instructions[1].equals("dex")) {
                     if(instructions[2].equals("caught")) {
@@ -392,24 +487,31 @@ public class PixelmonExtension extends PlaceholderExpansion {
                                 } catch (NumberFormatException e) {
                                     return instructions[3] + " is not a number.";
                                 }
-                                String move = pokemon.getMoveset().get(moveSlot - 1).toString();
+                                Attack move = pokemon.getMoveset().get(moveSlot - 1);
                                 if (length == 4)
-                                    parsed = (move == null) ? "None" : move; // %pixelmon_party_[1-6]_move_[1-4]%
+                                    parsed = (move == null) ? "None" : move.getActualMove().getLocalizedName(); // %pixelmon_party_[1-6]_move_[1-4]%
                                 if (length == 5 && instructions[4].equals("unlocalized"))
-                                    parsed = (move == null) ? "None" : unlocalize(move); // %pixelmon_party_[1-6]_move_[1-4]_unlocalized%
+                                    parsed = (move == null) ? "None" : move.getActualMove().getAttackName().replace(" ", ""); // %pixelmon_party_[1-6]_move_[1-4]_unlocalized%
                             }
                             break;
                         case "moves": // %pixelmon_party_[1-6]_moves…
-                            String moveset = Arrays.toString(pokemon.getMoveset().attacks);
-                            moveset = moveset.substring(1, moveset.length()-1);
-                            String[] moves = moveset.split(", ");
-                            if (length == 3) parsed = listFunction(moves, ", ", true); // %pixelmon_party_[1-6]_moves%
-                            if (length >= 4 && instructions[3].contains("s:"))
-                                parsed = listFunction(moves, instructionsLeft(3, instructions), true); // %pixelmon_party_[1-6]_moves_s:[separator]%
-                            if (length == 4 && instructions[3].equals("unlocalized"))
-                                parsed = listFunction(moves, ", ", false); // %pixelmon_party_[1-6]_moves_unlocalized%
-                            if (length >= 5 && instructions[3].equals("unlocalized") && instructions[4].contains("s:"))
-                                parsed = listFunction(moves, instructionsLeft(4, instructions), false); // %pixelmon_party_[1-6]_moves_unlocalized_s:[separator]%
+                            List<String> moves = new ArrayList<>();
+                            if (length == 3) {
+                                Arrays.stream(pokemon.getMoveset().attacks).forEach(attack -> moves.add(attack.getActualMove().getLocalizedName()));
+                                parsed = listFunction(moves.toArray(new String[0]), ", "); // %pixelmon_party_[1-6]_moves%
+                            }
+                            if (length >= 4 && instructions[3].contains("s:")) {
+                                Arrays.stream(pokemon.getMoveset().attacks).forEach(attack -> moves.add(attack.getActualMove().getLocalizedName()));
+                                parsed = listFunction(moves.toArray(new String[0]), instructionsLeft(3, instructions)); // %pixelmon_party_[1-6]_moves_s:[separator]%
+                            }
+                            if (length == 4 && instructions[3].equals("unlocalized")) {
+                                Arrays.stream(pokemon.getMoveset().attacks).forEach(attack -> moves.add(attack.getActualMove().getAttackName().replace(" ", "")));
+                                parsed = listFunction(moves.toArray(new String[0]), ", "); // %pixelmon_party_[1-6]_moves_unlocalized%
+                            }
+                            if (length >= 5 && instructions[3].equals("unlocalized") && instructions[4].contains("s:")) {
+                                Arrays.stream(pokemon.getMoveset().attacks).forEach(attack -> moves.add(attack.getActualMove().getAttackName().replace(" ", "")));
+                                parsed = listFunction(moves.toArray(new String[0]), instructionsLeft(4, instructions)); // %pixelmon_party_[1-6]_moves_unlocalized_s:[separator]%
+                            }
                             break;
                         case "friendship": // %pixelmon_party_[1-6]_friendship%
                             if (length == 3) parsed = String.valueOf(pokemon.getFriendship());
@@ -418,7 +520,10 @@ public class PixelmonExtension extends PlaceholderExpansion {
                             if (length == 3)
                                 parsed = pokemon.getAbility().getLocalizedName(); // %pixelmon_party_[1-6]_ability%
                             if (length == 4 && instructions[3].equals("unlocalized"))
-                                parsed = unlocalize(pokemon.getAbility().getLocalizedName()); // %pixelmon_party_[1-6]_unlocalized%
+                                parsed = pokemon.getAbility().getName(); // %pixelmon_party_[1-6]_ability_unlocalized%
+                            if(length == 4 && instructions[3].equals("isha")) // %pixelmon_party_[1-6]_ability_isHA%
+                                parsed = String.valueOf(pokemon.getForm().getAbilities().getHiddenAbilities().length > 0
+                                        && pokemon.getAbility().equals(pokemon.getForm().getAbilities().getHiddenAbilities()[0]));
                             break;
                         case "gender": // %pixelmon_party_[1-6]_gender%
                             if (length == 3) parsed = pokemon.getGender().getLocalizedName();
@@ -440,7 +545,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
                         case "ball": // %pixelmon_party_[1-6]_ball%
                             if (length == 3) parsed = pokemon.getBall().getLocalizedName();
                             if (length == 4 && instructions[3].equals("unlocalized"))
-                                parsed = unlocalize(pokemon.getBall().getLocalizedName());
+                                parsed = pokemon.getBall().getName();
                             break;
                         case "nature": // %pixelmon_party_[1-6]_nature…
                             if (length == 3)
@@ -639,18 +744,23 @@ public class PixelmonExtension extends PlaceholderExpansion {
                             }
                             break;
                         case "abilities":
-                            StringBuilder sb = new StringBuilder();
-                            for(Ability ability : stats.getAbilities().getAll()) {
-                                sb.append(ability.getLocalizedName()).append(", ");
+                            List<String> abilities = new ArrayList<>();
+                            if (length == 3) {
+                                Arrays.stream(stats.getAbilities().getAll()).forEach(ability -> abilities.add(ability.getLocalizedName()));
+                                parsed = listFunction(abilities.toArray(new String[0]), ", ");  // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_abilities%
                             }
-                            String[] ab = sb.substring(0, sb.toString().length()-2).split(", ");
-                            if (length == 3) parsed = listFunction(ab, ", ", true);  // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_abilities%
-                            if (length >= 4 && instructions[3].contains("s:"))
-                                parsed = listFunction(ab, instructionsLeft(3, instructions), true);  // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_abilities_s:[separator]%
-                            if (length == 4 && instructions[3].equals("unlocalized"))
-                                parsed = listFunction(ab, ", ", false); // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_abilities_unlocalized%
-                            if (length >= 5 && instructions[3].equals("unlocalized") && instructions[4].contains("s:"))
-                                parsed = listFunction(ab, instructionsLeft(4, instructions), false); // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_abilities_unlocalized_s:[separator]%
+                            if (length >= 4 && instructions[3].contains("s:")) {
+                                Arrays.stream(stats.getAbilities().getAll()).forEach(ability -> abilities.add(ability.getLocalizedName()));
+                                parsed = listFunction(abilities.toArray(new String[0]), instructionsLeft(3, instructions));  // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_abilities_s:[separator]%
+                            }
+                            if (length == 4 && instructions[3].equals("unlocalized")) {
+                                Arrays.stream(stats.getAbilities().getAll()).forEach(ability -> abilities.add(ability.getName()));
+                                parsed = listFunction(abilities.toArray(new String[0]), ", "); // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_abilities_unlocalized%
+                            }
+                            if (length >= 5 && instructions[3].equals("unlocalized") && instructions[4].contains("s:")) {
+                                Arrays.stream(stats.getAbilities().getAll()).forEach(ability -> abilities.add(ability.getName()));
+                                parsed = listFunction(abilities.toArray(new String[0]), instructionsLeft(4, instructions)); // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_abilities_unlocalized_s:[separator]%
+                            }
                             break;
                         case "ability":
                             if(length >= 4) {
@@ -658,7 +768,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
                                     case "1":
                                         if(length == 4) parsed = stats.getAbilities().getAbilities()[0].getLocalizedName();
                                         // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_ability_1%
-                                        if(length == 5 && instructions[4].equals("unlocalized")) parsed = unlocalize(stats.getAbilities().getAbilities()[0].getLocalizedName());
+                                        if(length == 5 && instructions[4].equals("unlocalized")) parsed = stats.getAbilities().getAbilities()[0].getName();
                                         // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_ability_1_unlocalized%
                                         break;
                                     case "2":
@@ -666,7 +776,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
                                         if(length == 4) parsed = (hasSecond) ? stats.getAbilities().getAbilities()[1].getLocalizedName()
                                                 : "None"; // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_ability_2%
                                         if(length == 5 && instructions[4].equals("unlocalized")) parsed = (hasSecond) ?
-                                                unlocalize(stats.getAbilities().getAbilities()[1].getLocalizedName())
+                                                stats.getAbilities().getAbilities()[1].getName()
                                                 : "None"; // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_ability_2_unlocalized%
                                         break;
                                     case "ha":
@@ -674,7 +784,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
                                                 stats.getAbilities().getHiddenAbilities()[0].getLocalizedName() : "None";
                                         // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_ability_ha%
                                         if(length == 5 && instructions[4].equals("unlocalized")) parsed = (stats.getAbilities().hasHiddenAbilities()) ?
-                                                unlocalize(stats.getAbilities().getHiddenAbilities()[0].getLocalizedName())
+                                                stats.getAbilities().getHiddenAbilities()[0].getName()
                                                 : "None"; // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_ability_ha_unlocalized%
                                         break;
                                 }
@@ -695,9 +805,9 @@ public class PixelmonExtension extends PlaceholderExpansion {
                             if(length >= 4 && instructions[3].equals("groups")) { // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_egg_groups…
                                 List<String> groups = new ArrayList<>();
                                 stats.getEggGroups().forEach(eggGroup -> groups.add(eggGroup.getTranslatedName().getString()));
-                                if (length == 4) parsed = listFunction(groups.toArray(new String[0]), ", ", true); // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_egg_groups%
+                                if (length == 4) parsed = listFunction(groups.toArray(new String[0]), ", "); // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_egg_groups%
                                 if (length >= 5 && instructions[4].contains("s:")) // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_egg_groups_s:[separator]%
-                                    parsed = listFunction(groups.toArray(new String[0]), instructionsLeft(4, instructions), true);
+                                    parsed = listFunction(groups.toArray(new String[0]), instructionsLeft(4, instructions));
                             }
                             if(length == 5 && instructions[3].equals("steps") && instructions[4].equals("max")) {
                                 // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_egg_steps_max%
@@ -708,10 +818,10 @@ public class PixelmonExtension extends PlaceholderExpansion {
                         case "type": // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_type…
                             List<String> types = new ArrayList<>();
                             for(Element type : stats.getTypes()) types.add(type.getName());
-                            if(length == 3) parsed = (types.size() == 0) ? "None" : listFunction(types.toArray(new String[0]), ", ", true);
+                            if(length == 3) parsed = (types.size() == 0) ? "None" : listFunction(types.toArray(new String[0]), ", ");
                             // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_type%
                             if(length == 4 && instructions[3].contains("s:")) parsed = (types.size() == 0) ? "None" :
-                                    listFunction(types.toArray(new String[0]), instructionsLeft(3, instructions), true);
+                                    listFunction(types.toArray(new String[0]), instructionsLeft(3, instructions));
                             // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_type_s:[separator]%
                             if(length == 4 && instructions[3].equals("1")) parsed = (types.size() == 0) ? "None" : types.get(0);
                             // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_type_1%
@@ -804,25 +914,17 @@ public class PixelmonExtension extends PlaceholderExpansion {
         return formatted.toString();
     }
 
-    private String listFunction(String[] toList, String separator, boolean localized) {
+    private String listFunction(String[] toList, String separator) {
         separator = separator.replaceFirst("s:", "");
         if(toList.length == 1) return toList[0];
         StringBuilder sb = new StringBuilder();
         for (String s : toList) {
             if (!(s.equals("null"))) {
-                if (localized) {
-                    sb.append(s).append(separator);
-                } else {
-                    sb.append(unlocalize(s)).append(separator);
-                }
+                sb.append(s).append(separator);
             }
         }
         String list = sb.toString();
         return list.substring(0, (list.length() - separator.length()));
-    }
-
-    private String unlocalize(String localized) {
-        return localized.replaceAll(" ", "");
     }
 
     private String instructionsLeft(int startPoint, String[] instructions) {
