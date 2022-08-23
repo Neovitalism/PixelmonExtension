@@ -76,7 +76,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.1.0";
+        return "1.1.1";
     }
 
     @NotNull
@@ -489,27 +489,27 @@ public class PixelmonExtension extends PlaceholderExpansion {
                                 }
                                 Attack move = pokemon.getMoveset().get(moveSlot - 1);
                                 if (length == 4)
-                                    parsed = (move == null) ? "None" : move.getActualMove().getLocalizedName(); // %pixelmon_party_[1-6]_move_[1-4]%
+                                    parsed = (move == null) ? "None" : move.getMove().getLocalizedName(); // %pixelmon_party_[1-6]_move_[1-4]%
                                 if (length == 5 && instructions[4].equals("unlocalized"))
-                                    parsed = (move == null) ? "None" : move.getActualMove().getAttackName().replace(" ", ""); // %pixelmon_party_[1-6]_move_[1-4]_unlocalized%
+                                    parsed = (move == null) ? "None" : move.getMove().getAttackName().replace(" ", ""); // %pixelmon_party_[1-6]_move_[1-4]_unlocalized%
                             }
                             break;
                         case "moves": // %pixelmon_party_[1-6]_moves…
                             List<String> moves = new ArrayList<>();
                             if (length == 3) {
-                                Arrays.stream(pokemon.getMoveset().attacks).forEach(attack -> moves.add(attack.getActualMove().getLocalizedName()));
+                                Arrays.stream(pokemon.getMoveset().attacks).forEach(attack -> moves.add((attack != null) ? attack.getMove().getLocalizedName() : "None"));
                                 parsed = listFunction(moves.toArray(new String[0]), ", "); // %pixelmon_party_[1-6]_moves%
                             }
                             if (length >= 4 && instructions[3].contains("s:")) {
-                                Arrays.stream(pokemon.getMoveset().attacks).forEach(attack -> moves.add(attack.getActualMove().getLocalizedName()));
+                                Arrays.stream(pokemon.getMoveset().attacks).forEach(attack -> moves.add((attack != null) ? attack.getMove().getLocalizedName() : "None"));
                                 parsed = listFunction(moves.toArray(new String[0]), instructionsLeft(3, instructions)); // %pixelmon_party_[1-6]_moves_s:[separator]%
                             }
                             if (length == 4 && instructions[3].equals("unlocalized")) {
-                                Arrays.stream(pokemon.getMoveset().attacks).forEach(attack -> moves.add(attack.getActualMove().getAttackName().replace(" ", "")));
+                                Arrays.stream(pokemon.getMoveset().attacks).forEach(attack -> moves.add((attack != null) ? attack.getMove().getAttackName().replace(" ", "") : "None"));
                                 parsed = listFunction(moves.toArray(new String[0]), ", "); // %pixelmon_party_[1-6]_moves_unlocalized%
                             }
                             if (length >= 5 && instructions[3].equals("unlocalized") && instructions[4].contains("s:")) {
-                                Arrays.stream(pokemon.getMoveset().attacks).forEach(attack -> moves.add(attack.getActualMove().getAttackName().replace(" ", "")));
+                                Arrays.stream(pokemon.getMoveset().attacks).forEach(attack -> moves.add((attack != null) ? attack.getMove().getAttackName().replace(" ", "") : "None"));
                                 parsed = listFunction(moves.toArray(new String[0]), instructionsLeft(4, instructions)); // %pixelmon_party_[1-6]_moves_unlocalized_s:[separator]%
                             }
                             break;
