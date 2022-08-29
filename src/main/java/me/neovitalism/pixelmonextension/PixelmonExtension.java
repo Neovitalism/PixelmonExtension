@@ -76,7 +76,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.1.1";
+        return "1.1.2";
     }
 
     @NotNull
@@ -301,10 +301,16 @@ public class PixelmonExtension extends PlaceholderExpansion {
                         }
                     }
                 }
-                if(length == 2 && instructions[1].equals("balance")) { // %pixelmon_trainer_balance%
+                if(length >= 2 && instructions[1].equals("balance")) { // %pixelmon_trainer_balance…
                    Optional<? extends BankAccount> playerAccount = BankAccountProxy.getBankAccount(playerUUID);
-                   if(playerAccount.isEmpty()) return "0";
-                   return String.format("%.2f", playerAccount.get().getBalance());
+                   if(length == 2) {
+                       if(playerAccount.isEmpty()) return "0.00"; // %pixelmon_trainer_balance%
+                       return String.format("%.2f", playerAccount.get().getBalance());
+                   }
+                   if(length == 3 && instructions[2].equals("int")) {
+                       if(playerAccount.isEmpty()) return "0"; // %pixelmon_trainer_balance_int%
+                       return String.format("%.0f", playerAccount.get().getBalance());
+                   }
                 }
                 if(length == 3 && instructions[1].equals("highest") && instructions[2].equals("level"))
                     return String.valueOf(playerParty.getHighestLevel()); // %pixelmon_trainer_highest_level%
@@ -479,6 +485,9 @@ public class PixelmonExtension extends PlaceholderExpansion {
                             }
                             break;
                         case "move": // %pixelmon_party_[1-6]_move…
+                            if(length == 4 && instructions[3].equals("count")) { // %pixelmon_party_[1-6]_move_count%
+                                return String.valueOf(pokemon.getMoveset().size());
+                            }
                             if (length >= 4) {
                                 int moveSlot;
                                 try {
@@ -869,12 +878,12 @@ public class PixelmonExtension extends PlaceholderExpansion {
                             }
                             break;
                         case "mew":
-                        if(length == 5 && instructions[3].equals("clones") && instructions[4].equals("max"))
-                            if(species.getName().equals("Mew")) {
-                                parsed = String.valueOf(MewStats.MAX_CLONES); // %pixelmon_pokedex_[pokemonName/dexNumber]<:formName>_mew_clones_max%
-                            } else {
-                                parsed = "Invalid Pokemon.";
-                            }
+                            if(length == 5 && instructions[3].equals("clones") && instructions[4].equals("max"))
+                                if(species.getName().equals("Mew")) {
+                                    parsed = String.valueOf(MewStats.MAX_CLONES); // %pixelmon_pokedex_[pokemonName/dexNumber]<:formName>_mew_clones_max%
+                                } else {
+                                    parsed = "Invalid Pokemon.";
+                                }
                             break;
                         case "laketrio":
                             if(length == 5 && instructions[3].equals("rubies") && instructions[4].equals("max"))
