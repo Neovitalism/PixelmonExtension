@@ -76,7 +76,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.1.2.4";
+        return "1.1.4";
     }
 
     @NotNull
@@ -345,6 +345,21 @@ public class PixelmonExtension extends PlaceholderExpansion {
                     pokemon = playerParty.get(partySlot - 1);
                     if (pokemon == null) return "No pokemon in that party slot.";
                     switch (instructions[2]) {
+
+                        // This is bullshit :D
+                        case "name":
+                            if(length == 3) parsed = pokemon.getLocalizedName(); // %pixelmon_party_[1-6]_name%
+                            if(length == 4 && instructions[3].equals("formatted")) { // %pixelmon_party_[1-6]_name_formatted%
+                                String formName = pokemon.getForm().getLocalizedName();
+                                if (formName.equals("None")) {
+                                    parsed = pokemon.getLocalizedName();
+                                } else {
+                                    parsed = formName + " " + pokemon.getLocalizedName();
+                                }
+                            }
+                            break;
+                        // End bullshit
+
                         case "nickname":
                             String nickname = pokemon.getNickname();
                             if (length == 3) { // %pixelmon_party_[1-6]_nickname%
