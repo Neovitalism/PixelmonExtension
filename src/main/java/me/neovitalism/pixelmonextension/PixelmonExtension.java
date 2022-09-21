@@ -76,7 +76,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.1.2";
+        return "1.1.2.4";
     }
 
     @NotNull
@@ -301,7 +301,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
                         }
                     }
                 }
-                if(length >= 2 && instructions[1].equals("balance")) { // %pixelmon_trainer_balance…
+                if(instructions[1].equals("balance")) { // %pixelmon_trainer_balance…
                    Optional<? extends BankAccount> playerAccount = BankAccountProxy.getBankAccount(playerUUID);
                    if(length == 2) {
                        if(playerAccount.isEmpty()) return "0.00"; // %pixelmon_trainer_balance%
@@ -711,12 +711,12 @@ public class PixelmonExtension extends PlaceholderExpansion {
                             if(length == 3) parsed = String.valueOf(species.getGeneration());
                             break;
                         case "name":
-                            if(length == 3) parsed = species.getLocalizedName(); // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_name%
+                            if(length == 3) parsed = species.getName(); // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_name%
                             if(length == 4 && instructions[3].equals("formatted")) { // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_name_formatted%
                                 if (formName.equals("None")) {
-                                    parsed = species.getLocalizedName();
+                                    parsed = species.getName();
                                 } else {
-                                    parsed = formName + " " + species.getLocalizedName();
+                                    parsed = formName + " " + species.getName();
                                 }
                             }
                             break;
