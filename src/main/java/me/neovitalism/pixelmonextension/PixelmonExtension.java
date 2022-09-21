@@ -8,6 +8,7 @@ import com.pixelmonmod.pixelmon.api.pokedex.PlayerPokedex;
 import com.pixelmonmod.pixelmon.api.pokemon.Element;
 import com.pixelmonmod.pixelmon.api.pokemon.Nature;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonFactory;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Pokedex;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Stats;
@@ -76,7 +77,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.1.4";
+        return "1.1.5";
     }
 
     @NotNull
@@ -345,21 +346,6 @@ public class PixelmonExtension extends PlaceholderExpansion {
                     pokemon = playerParty.get(partySlot - 1);
                     if (pokemon == null) return "No pokemon in that party slot.";
                     switch (instructions[2]) {
-
-                        // This is bullshit :D
-                        case "name":
-                            if(length == 3) parsed = pokemon.getLocalizedName(); // %pixelmon_party_[1-6]_name%
-                            if(length == 4 && instructions[3].equals("formatted")) { // %pixelmon_party_[1-6]_name_formatted%
-                                String formName = pokemon.getForm().getLocalizedName();
-                                if (formName.equals("None")) {
-                                    parsed = pokemon.getLocalizedName();
-                                } else {
-                                    parsed = formName + " " + pokemon.getLocalizedName();
-                                }
-                            }
-                            break;
-                        // End bullshit
-
                         case "nickname":
                             String nickname = pokemon.getNickname();
                             if (length == 3) { // %pixelmon_party_[1-6]_nickname%
@@ -725,16 +711,22 @@ public class PixelmonExtension extends PlaceholderExpansion {
                         case "gen": // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_gen%
                             if(length == 3) parsed = String.valueOf(species.getGeneration());
                             break;
+
+                            // I shouldn't be having to do this.
+
                         case "name":
-                            if(length == 3) parsed = species.getName(); // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_name%
+                            if(length == 3) parsed = PokemonFactory.create(species).getLocalizedName(); // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_name%
                             if(length == 4 && instructions[3].equals("formatted")) { // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_name_formatted%
                                 if (formName.equals("None")) {
-                                    parsed = species.getName();
+                                    parsed = PokemonFactory.create(species).getLocalizedName();
                                 } else {
-                                    parsed = formName + " " + species.getName();
+                                    parsed = formName + " " + PokemonFactory.create(species).getLocalizedName();
                                 }
                             }
                             break;
+
+                            // But I'm going to do it anyways.
+
                         case "basestat": // %pixelmon_pokedex_[pokemonName,dexNumber]<:formName>_basestat…
                             if(length == 4) {
                                 ImmutableBattleStats battleStats = stats.getBattleStats();
