@@ -77,7 +77,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.1.6";
+        return "1.1.7";
     }
 
     @NotNull
@@ -356,16 +356,15 @@ public class PixelmonExtension extends PlaceholderExpansion {
                             if(pokemonInstruction.length == 3) {
                                 paletteName = pokemonInstruction[2];
                             }
-                            Optional<Species> lookingForOptional = PixelmonSpecies.fromNameOrDex(pokemonDexOrName);
-                            if(lookingForOptional.isPresent()) {
-                                Species lookingFor = lookingForOptional.get();
+                            Species lookingFor = getSpecies(pokemonDexOrName);
+                            if(lookingFor != null) {
                                 for (int y = 0; y < 6; y++) {
                                     Pokemon partyPokemon = playerParty.get(y);
                                     if(partyPokemon != null) {
                                         if(partyPokemon.getSpecies().getName().equals(lookingFor.getName())) {
                                             if(formName != null) {
                                                 String parsedFormName = getFormName(pokemonDexOrName+":"+formName);
-                                                if(parsedFormName != null && parsedFormName.equals(partyPokemon.getForm().getName())) {
+                                                if(parsedFormName != null && parsedFormName.equalsIgnoreCase(partyPokemon.getForm().getLocalizedName())) {
                                                     if(paletteName != null) {
                                                         if(paletteName.equalsIgnoreCase(partyPokemon.getPalette().getName())) {
                                                             return "true";
@@ -1025,13 +1024,10 @@ public class PixelmonExtension extends PlaceholderExpansion {
         String[] data = toParse.split(":");
         if(data.length == 1) return "None";
         if(data.length > 1) {
-            int dexNumber = -1;
-            try{
-                dexNumber = Integer.parseInt(data[0]);
-            } catch (NumberFormatException ignored) {}
-            Optional<Species> optional = PixelmonSpecies.fromNameOrDex((dexNumber == -1 ) ? data[0] : dexNumber);
-            if(optional.isEmpty()) return null;
-            Stats stats = optional.get().getForm(data[1]);
+            if(data[1].equalsIgnoreCase("None")) return "None";
+            Species species = getSpecies(data[0]);
+            if(species == null) return null;
+            Stats stats = species.getForm(data[1]);
             if(stats == null) return null;
             if(data.length == 2) return stats.getName();
         }
