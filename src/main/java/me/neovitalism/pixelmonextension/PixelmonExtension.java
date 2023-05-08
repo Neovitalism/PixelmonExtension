@@ -77,7 +77,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.1.5";
+        return "1.1.6";
     }
 
     @NotNull
@@ -341,7 +341,44 @@ public class PixelmonExtension extends PlaceholderExpansion {
                         partySlot = Integer.parseInt(instructions[1]);
                         if (partySlot < 1 || partySlot > 6) return partySlot + " is not a valid party slot.";
                     } catch (NumberFormatException e) {
-                        return instructions[1] + " is not a number.";
+                        if(instructions[1].equals("has")) {
+                            String pokemonDexOrName;
+                            String formName = null;
+                            String paletteName = null;
+                            String[] pokemonInstruction = instructions[2].split(":");
+                            if(pokemonInstruction.length == 0 || pokemonInstruction.length > 3) {
+                                return "Invalid pokemon identifier.";
+                            }
+                            pokemonDexOrName = pokemonInstruction[0];
+                            if(pokemonInstruction.length >= 2) {
+                                formName = pokemonInstruction[1];
+                            }
+                            if(pokemonInstruction.length == 3) {
+                                paletteName = pokemonInstruction[2];
+                            }
+                            Optional<Species> lookingForOptional = PixelmonSpecies.fromNameOrDex(pokemonDexOrName);
+                            if(lookingForOptional.isPresent()) {
+                                Species lookingFor = lookingForOptional.get();
+                                for (int y = 0; y < 6; y++) {
+                                    Pokemon partyPokemon = playerParty.get(y);
+                                    if(partyPokemon != null) {
+                                        if(partyPokemon.getSpecies().getName().equals(lookingFor.getName())) {
+                                            if(formName != null) {
+                                                String parsedFormName = getFormName(pokemonDexOrName+":"+formName);
+                                                if(parsedFormName != null && parsedFormName.equals(partyPokemon.getForm().getName())) {
+                                                    if(paletteName != null) {
+                                                        if(paletteName.equalsIgnoreCase(partyPokemon.getPalette().getName())) {
+                                                            return "true";
+                                                        }
+                                                    } else return "true";
+                                                }
+                                            } else return "true";
+                                        }
+                                    }
+                                }
+                                return "false";
+                            } else return "Invalid pokemon.";
+                        } else return instructions[1] + " is not a number.";
                     }
                     pokemon = playerParty.get(partySlot - 1);
                     if (pokemon == null) return "No pokemon in that party slot.";
@@ -1004,7 +1041,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
     private int getGeneration(String s) {
         try{
             int gen = Integer.parseInt(s);
-            if(gen < 1 || gen > 8) return -1;
+            if(gen < 1 || gen > 9) return -1;
             return gen;
         } catch(NumberFormatException e) {
             return -1;
