@@ -77,7 +77,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.1.7";
+        return "1.1.8";
     }
 
     @NotNull
@@ -376,7 +376,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
                                     }
                                 }
                                 return "false";
-                            } else return "Invalid pokemon.";
+                            } else return "Invalid pokemon identifier.";
                         } else return instructions[1] + " is not a number.";
                     }
                     pokemon = playerParty.get(partySlot - 1);
@@ -715,6 +715,11 @@ public class PixelmonExtension extends PlaceholderExpansion {
                             if (length == 4 && instructions[3].equals("item")) { // %pixelmon_party_[1-6]_held_item%
                                 String heldItem = pokemon.getHeldItem().getDisplayName().getString();
                                 parsed = (heldItem.equals("[Air]")) ? "None" : heldItem.substring(1, heldItem.length() - 1);
+                            }
+                            break;
+                        case "sprite":
+                            if(length == 4 && instructions[3].equals("path")) {
+                                parsed = pokemon.getSprite().toString();
                             }
                             break;
                         // End Party Placeholders
