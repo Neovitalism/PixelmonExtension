@@ -77,7 +77,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.1.8";
+        return "1.1.9";
     }
 
     @NotNull
@@ -333,7 +333,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
             }
             boolean partyExtension = false;
             Pokemon pokemon = null;
-            if(length >= 3) {
+            if(length >= 2) {
                 if (instructions[0].equals("party")) { // %pixelmon_party_[1-6]…
                     partyExtension = true;
                     int partySlot;
@@ -341,7 +341,15 @@ public class PixelmonExtension extends PlaceholderExpansion {
                         partySlot = Integer.parseInt(instructions[1]);
                         if (partySlot < 1 || partySlot > 6) return partySlot + " is not a valid party slot.";
                     } catch (NumberFormatException e) {
-                        if(instructions[1].equals("has")) {
+                        if(instructions.length == 2 && instructions[1].equals("size")) {
+                            int partyCount = 0;
+                            for(int i = 0; i < 6; i++) {
+                                if(playerParty.get(i) != null) {
+                                    partyCount++;
+                                }
+                            }
+                            return String.valueOf(partyCount);
+                        } else if(instructions[1].equals("has")) {
                             String pokemonDexOrName;
                             String formName = null;
                             String paletteName = null;
