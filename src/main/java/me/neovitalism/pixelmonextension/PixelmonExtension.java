@@ -17,7 +17,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.species.gender.Gender;
 import com.pixelmonmod.pixelmon.api.pokemon.species.stat.ImmutableBattleStats;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.BattleStatsType;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.evolution.Evolution;
-import com.pixelmonmod.pixelmon.api.pokemon.stats.evolution.conditions.OreCondition;
+import com.pixelmonmod.pixelmon.api.pokemon.stats.evolution.conditions.NuggetCondition;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.extraStats.LakeTrioStats;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.extraStats.MeltanStats;
 import com.pixelmonmod.pixelmon.api.pokemon.stats.extraStats.MewStats;
@@ -704,15 +704,15 @@ public class PixelmonExtension extends PlaceholderExpansion {
                             }
                             break;
                         case "meltan":
-                            if (length >= 4 && instructions[3].equals("ores")) {
+                            if (length >= 4 && instructions[3].equals("nuggets")) {
                                 if (pokemon.getSpecies().getName().equals("Meltan")) {
                                     MeltanStats meltanStats = (MeltanStats) pokemon.getExtraStats();
                                     if (length == 4)
-                                        parsed = String.valueOf(meltanStats.oresSmelted); // %pixelmon_party_[1-6]_meltan_ores%
+                                        parsed = String.valueOf(meltanStats.nuggetsFed); // %pixelmon_party_[1-6]_meltan_nuggets%
                                     if (length == 5 && instructions[4].equals("left")) {
                                         List<Evolution> evolutionData = pokemon.getSpecies().getDefaultForm().getEvolutions();
-                                        List<OreCondition> oreCondition = evolutionData.get(0).getConditionsOfType(OreCondition.class);
-                                        parsed = String.valueOf(oreCondition.get(0).ores - meltanStats.oresSmelted); // %pixelmon_party_[1-6]_meltan_ores_left%
+                                        List<NuggetCondition> oreCondition = evolutionData.get(0).getConditionsOfType(NuggetCondition.class);
+                                        parsed = String.valueOf(oreCondition.get(0).nuggets - meltanStats.nuggetsFed); // %pixelmon_party_[1-6]_meltan_nuggets_left%
                                     }
                                 } else {
                                     parsed = "Invalid Pokemon.";
@@ -951,11 +951,11 @@ public class PixelmonExtension extends PlaceholderExpansion {
                                 }
                             break;
                         case "meltan":
-                            if(length == 5 && instructions[3].equals("ores") && instructions[4].equals("max")) {
+                            if(length == 5 && instructions[3].equals("nuggets") && instructions[4].equals("max")) {
                                 if(species.getName().equals("Meltan")) {
                                     List<Evolution> evolutionData = Objects.requireNonNull(getSpecies("meltan")).getDefaultForm().getEvolutions();
-                                    List<OreCondition> oreCondition = evolutionData.get(0).getConditionsOfType(OreCondition.class);
-                                    parsed = String.valueOf(oreCondition.get(0).ores); // %pixelmon_pokedex_[pokemonName/dexNumber]<:formName>_meltan_ores_max%
+                                    List<NuggetCondition> oreCondition = evolutionData.get(0).getConditionsOfType(NuggetCondition.class);
+                                    parsed = String.valueOf(oreCondition.get(0).nuggets); // %pixelmon_pokedex_[pokemonName/dexNumber]<:formName>_meltan_nuggets_max%
                                 } else {
                                     parsed = "Invalid Pokemon.";
                                 }
