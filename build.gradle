@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '[6.0,6.2)', changing: true
     }
 }
 
@@ -17,7 +17,7 @@ apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle'
 
 minecraft {
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: 'official', version: '1.20.1'
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -37,7 +37,6 @@ repositories {
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url = 'https://oss.sonatype.org/content/repositories/central' }
     maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
-    maven { url = '' }
     mavenLocal()
     ivy {
         setUrl('https://download.nodecdn.net/containers/reforged/server/release')
@@ -51,12 +50,12 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.34'
-    implementation fg.deobf('pixelmon:Pixelmon-1.16.5-9.1.6-server:9.1.6')
-    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
-    compileOnly 'org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT'
+    minecraft "net.minecraftforge:forge:1.20.1-47.1.44"
+    implementation 'org.jetbrains:annotations:24.0.1'
+    implementation fg.deobf('pixelmon:Pixelmon-1.20.1-9.2.3-server:9.2.3')
+
+    compileOnly 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.10.10'
-    compileOnly 'org.jetbrains:annotations:24.0.1'
 }
 
 jar.finalizedBy('reobfJar')

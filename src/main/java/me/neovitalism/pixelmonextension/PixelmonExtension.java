@@ -84,7 +84,8 @@ public class PixelmonExtension extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer player, @NotNull String params) {
         if(params.endsWith("_")) return "Invalid placeholder.";
         UUID playerUUID = player.getUniqueId();
-        PlayerPartyStorage playerParty = StorageProxy.getParty(playerUUID);
+        PlayerPartyStorage playerParty = StorageProxy.getPartyNow(playerUUID);
+        if(playerParty == null) return "Something went wrong.";
         params = params.toLowerCase();
         String parsed = "";
         boolean isParsed = false;
@@ -303,14 +304,14 @@ public class PixelmonExtension extends PlaceholderExpansion {
                     }
                 }
                 if(instructions[1].equals("balance")) { // %pixelmon_trainer_balance…
-                   Optional<? extends BankAccount> playerAccount = BankAccountProxy.getBankAccount(playerUUID);
+                   BankAccount playerAccount = BankAccountProxy.getBankAccountNow(playerUUID);
                    if(length == 2) {
-                       if(playerAccount.isEmpty()) return "0.00"; // %pixelmon_trainer_balance%
-                       return String.format("%.2f", playerAccount.get().getBalance());
+                       if(playerAccount == null) return "0.00"; // %pixelmon_trainer_balance%
+                       return String.format("%.2f", playerAccount.getBalance());
                    }
                    if(length == 3 && instructions[2].equals("int")) {
-                       if(playerAccount.isEmpty()) return "0"; // %pixelmon_trainer_balance_int%
-                       return String.format("%.0f", playerAccount.get().getBalance());
+                       if(playerAccount == null) return "0"; // %pixelmon_trainer_balance_int%
+                       return String.format("%.0f", playerAccount.getBalance());
                    }
                 }
                 if(length == 3 && instructions[1].equals("highest") && instructions[2].equals("level"))
