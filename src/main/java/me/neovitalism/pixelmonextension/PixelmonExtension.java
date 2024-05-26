@@ -77,14 +77,14 @@ public class PixelmonExtension extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.2.0";
+        return "2.0.0";
     }
 
     @NotNull
     public String onRequest(OfflinePlayer player, @NotNull String params) {
         if(params.endsWith("_")) return "Invalid placeholder.";
         UUID playerUUID = player.getUniqueId();
-        PlayerPartyStorage playerParty = StorageProxy.getPartyNow(playerUUID);
+        PlayerPartyStorage playerParty = StorageProxy.getParty(playerUUID);
         if(playerParty == null) return "Something went wrong.";
         params = params.toLowerCase();
         String parsed = "";
@@ -304,7 +304,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
                     }
                 }
                 if(instructions[1].equals("balance")) { // %pixelmon_trainer_balance…
-                   BankAccount playerAccount = BankAccountProxy.getBankAccountNow(playerUUID);
+                   BankAccount playerAccount = BankAccountProxy.getBankAccount(playerUUID).orElse(null);
                    if(length == 2) {
                        if(playerAccount == null) return "0.00"; // %pixelmon_trainer_balance%
                        return String.format("%.2f", playerAccount.getBalance());
@@ -1027,11 +1027,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
             dexNumber = Integer.parseInt(data[0]);
         } catch (NumberFormatException ignored) {}
         Optional<Species> optional = PixelmonSpecies.fromNameOrDex((dexNumber == -1 ) ? data[0] : dexNumber);
-        if(optional.isEmpty()) {
-            return null;
-        } else {
-            return optional.get();
-        }
+        return optional.orElse(null);
     }
 
     private String getFormName(String toParse) {
