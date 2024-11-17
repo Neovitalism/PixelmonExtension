@@ -392,7 +392,7 @@ public class PixelmonExtension extends PlaceholderExpansion {
                     if (pokemon == null) return "No pokemon in that party slot.";
                     switch (instructions[2]) {
                         case "nickname":
-                            String nickname = pokemon.getNickname();
+                            String nickname = pokemon.getNickname().getString();
                             if (length == 3) { // %pixelmon_party_[1-6]_nickname%
                                 if (nickname == null || nickname.isEmpty()) {
                                     parsed = pokemon.getLocalizedName();
